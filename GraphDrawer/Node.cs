@@ -4,15 +4,15 @@ public class Node
 {
 }
 
-public abstract class AnimationNode : Node
+public abstract class DrawingEventNode : Node
 {
 }
 
-public class FrameAnimationNode : AnimationNode
+public class StartFrameEventNode : DrawingEventNode
 {
 }
 
-public class NextValueAnimationNode : AnimationNode
+public class NextValueEventNode : DrawingEventNode
 {
 }
 

@@ -9,24 +9,43 @@ public class ImagesGenerator
         this.styler = styler;
     }
 
-    public void GenerateImage(string outputDirectory)
+    public void GenerateImage(TreeDescription tree, string outputDirectory)
     {
         if (!Directory.Exists(outputDirectory))
             Directory.CreateDirectory(outputDirectory);
         foreach (var file in Directory.GetFiles(outputDirectory, "*.png"))
             File.Delete(file);
-        var tree = TreeDescriptionParser.ParseFile($"trees/{outputDirectory}.tree");
-        var drawer = new TreeDrawer(tree, styler);
-        drawer.DrawFrames();
+        
+        
+        var serializer = tree.TraverseOrder switch
+        {
+            TraverseOrder.DepthFirst => new DfsTreeSerializer(),
+            TraverseOrder.BreadthFirst => throw new NotImplementedException(),
+            _ => throw new ArgumentOutOfRangeException(tree.TraverseOrder.ToString())
+        };
+        var events = serializer.GetEvents(tree);
+
+        var drawingSystem = new ImageSharpDrawingSystem();
+        var nodePositions = new NodePositionCalculator(tree);
+        var drawingController = new EventsDrawingController(nodePositions, styler, drawingSystem);
+        drawingController.DrawFrames(events.ToArray());
+        
         var i = 0;
-        foreach (var image in drawer.Result)
-            image.Save($"{outputDirectory}/{i++:00}.png");
+        foreach (var image in drawingSystem.Frames)
+        {
+            var filename =  drawingSystem.Frames.Count > 1 
+                    ? $"{outputDirectory}/{i:00}.png" 
+                    : $"{outputDirectory}.png";
+            i++;
+            image.Save(filename);
+        }
         Console.WriteLine($"{outputDirectory}\n    {i} images generated!");
     }
 
     public void GenerateFile(string filename)
     {
-        GenerateImage(Path.GetFileNameWithoutExtension(filename));
+        var tree = TreeDescriptionParser.ParseFile(filename);
+        GenerateImage(tree, Path.GetFileNameWithoutExtension(filename));
     }
 
     public void GenerateDirectory(string directory)

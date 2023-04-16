@@ -4,7 +4,14 @@ public class TreeDescription
 {
     public SizeF NodeSize = new(40, 25);
     public SizeF NodeSpacing = new(15, 30);
-    public AnimationNode[] AfterEachNode = Array.Empty<AnimationNode>();
-    public AnimationNode[] AfterLastChild = Array.Empty<AnimationNode>();
+    public TraverseOrder TraverseOrder = TraverseOrder.DepthFirst;
+    public DrawingEventNode[] AfterEachNode = Array.Empty<DrawingEventNode>();
+    public DrawingEventNode[] AfterLastChild = Array.Empty<DrawingEventNode>();
     public RealNode Root = new("root", "a");
+}
+
+public enum TraverseOrder
+{
+    DepthFirst,
+    BreadthFirst
 }

@@ -45,10 +45,13 @@ public class TreeDescriptionParser
                     result.NodeSpacing = new SizeF(float.Parse(values[0]), float.Parse(values[1]));
                     break;
                 case "@after-each-node":
-                    result.AfterEachNode = values.Select(ParseAnimation).ToArray<AnimationNode>();
+                    result.AfterEachNode = values.Select(ParseAnimation).ToArray<DrawingEventNode>();
                     break;
                 case "@after-last-child":
-                    result.AfterLastChild = values.Select(ParseAnimation).ToArray<AnimationNode>();
+                    result.AfterLastChild = values.Select(ParseAnimation).ToArray<DrawingEventNode>();
+                    break;
+                case "@traverse-order":
+                    result.TraverseOrder = Enum.Parse<TraverseOrder>(values[0], true);
                     break;
                 default:
                     throw new Exception($"Unknown property [{key}]");
@@ -76,12 +79,12 @@ public class TreeDescriptionParser
         yield return (node, depth);
     }
 
-    private static AnimationNode ParseAnimation(string animation)
+    private static DrawingEventNode ParseAnimation(string animation)
     {
         return animation switch
         {
-            "frame" => new FrameAnimationNode(),
-            "next-value" => new NextValueAnimationNode(),
+            "frame" => new StartFrameEventNode(),
+            "next-value" => new NextValueEventNode(),
             _ => throw new Exception($"Unknown animation [{animation}]")
         };
     }
