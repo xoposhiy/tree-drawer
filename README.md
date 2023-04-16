@@ -28,4 +28,4 @@ Frame 6
 Frame 10
 ![10](samples/10.png)
 
-[Demonstration of the alphabeta pruning minimax](blob/main/GraphDrawer/trees/alphabeta.tree)
+[Demonstration of the alphabeta pruning minimax](GraphDrawer/trees/alphabeta.tree)
