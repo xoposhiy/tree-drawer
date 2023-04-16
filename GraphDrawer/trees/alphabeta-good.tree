@@ -1,0 +1,18 @@
+﻿max 3
+	min 3
+		end 3
+		max ≥4
+			min 4
+				end 4
+			pruned
+				pruned 5
+	min ≤2
+		max 2
+			end 2
+			end 1
+		pruned
+			end 3
+			pruned
+				end 0
+				end 1
+		end 5

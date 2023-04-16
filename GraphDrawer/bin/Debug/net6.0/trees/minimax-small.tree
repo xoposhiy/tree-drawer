@@ -1,0 +1,11 @@
+﻿@after-each-node frame
+@after-last-child next-value frame
+max '' 2
+    min '' 2
+        max '' 2
+            end 0
+            end 2
+        max '' 3
+            end 2
+            end 3
+    end 0

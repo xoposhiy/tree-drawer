@@ -1,0 +1,40 @@
+﻿max '' '≥3' 3
+    @frame
+    min '' ≤3 3
+        @frame
+        max '' ≥1 ≥2 3
+            @frame
+            end 1
+            @next-value frame
+            end 2
+            @next-value frame
+            end 3
+            @next-value
+        @next-value frame
+        max '' ≥4
+            @frame
+            end 4
+            @next-value frame
+            pruned ...
+            pruned ...
+        @next-value
+    @next-value frame
+    min '' ≤5 ≤2
+        @frame
+        end 5
+        @next-value frame
+        max '' ≥2? ≥2 2
+            @frame
+            min '' ≤2
+                @frame
+                end 2
+                @next-value frame
+                pruned ...
+            @next-value frame
+            end 2
+            @next-value frame
+            end 0
+            @next-value frame
+        @next-value frame
+        pruned ...
+    @next-value frame

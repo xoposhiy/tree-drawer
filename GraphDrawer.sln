@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDrawer", "GraphDrawer\GraphDrawer.csproj", "{F86BCF6F-1E90-4DB8-92F2-811B5025E7BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F86BCF6F-1E90-4DB8-92F2-811B5025E7BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F86BCF6F-1E90-4DB8-92F2-811B5025E7BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F86BCF6F-1E90-4DB8-92F2-811B5025E7BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F86BCF6F-1E90-4DB8-92F2-811B5025E7BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
