@@ -11,6 +11,7 @@ public class ImageSharpDrawer : IDrawer
     private readonly List<Image<Rgba32>> frames;
 
     public Image<Rgba32> CurrentFrame => frames[^1];
+    private Image<Rgba32>? pendingFrame = null;
 
     public ImageSharpDrawer(int width, int height, IStyler styler, List<Image<Rgba32>> frames)
     {
@@ -22,24 +23,33 @@ public class ImageSharpDrawer : IDrawer
 
     public void StartFrame()
     {
-        var newFrame = frames.Count == 0 
+        pendingFrame = frames.Count == 0 
             ? new Image<Rgba32>(width, height, styler.GetBackColor()) 
             : CurrentFrame.Clone();
-        frames.Add(newFrame);
     }
 
     public void DrawLine(Color color, int penSize, PointF start, PointF end)
     {
+        FlushPendingFrame();
         CurrentFrame.Mutate(ctx => ctx.DrawLines(new Pen(color, penSize), start, end));
+    }
+
+    private void FlushPendingFrame()
+    {
+        if (pendingFrame != null)
+            frames.Add(pendingFrame);
+        pendingFrame = null;
     }
 
     public void FillPolygon(Color fillColor, PointF[] vertices)
     {
+        FlushPendingFrame();
         CurrentFrame.Mutate(ctx => ctx.FillPolygon(fillColor, vertices));
     }
 
     public void DrawText(TextStyle style, RectangleF rect, string text)
     {
+        FlushPendingFrame();
         CurrentFrame.Mutate(ctx =>
         {
             var pos = rect.Location + new SizeF(rect.Width / 2, rect.Height / 2 + 2);
@@ -56,6 +66,7 @@ public class ImageSharpDrawer : IDrawer
 
     public void FillRect(Color fillColor, RectangleF rect)
     {
+        FlushPendingFrame();
         CurrentFrame.Mutate(ctx => ctx.Fill(fillColor, rect));
     }
 }

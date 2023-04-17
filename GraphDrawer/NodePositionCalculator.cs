@@ -25,7 +25,7 @@ public class NodePositionCalculator
         var res = new Dictionary<RealNode, RectangleF>();
         var minXByLevel = Enumerable.Repeat(0f, 20).ToArray();
         SetPosition(root, 0, minXByLevel, res);
-        var shiftToRight = tree.NodeSpacing.Width + nodeSize.Width / 2;
+        var shiftToRight = tree.ImageMargins.Width + nodeSize.Width / 2;
         ShiftRight(root, res, shiftToRight);
         return res;
     }
@@ -33,7 +33,7 @@ public class NodePositionCalculator
     public SizeF GetImageSize()
     {
         var rect = GetRect(tree.Root, positions);
-        return rect.Size + 2*tree.NodeSpacing;
+        return rect.Size + 2*tree.ImageMargins;
     }
 
     public RectangleF this[RealNode node] => positions[node];
@@ -87,7 +87,7 @@ public class NodePositionCalculator
 
     private float GetNodeYPos(int level)
     {
-        var margin = tree.NodeSpacing.Height + nodeSize.Height / 2;
+        var margin = tree.ImageMargins.Height + nodeSize.Height / 2;
         return margin + level * (nodeSize.Height + tree.NodeSpacing.Height);
     }
 

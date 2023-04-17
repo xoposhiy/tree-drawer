@@ -44,11 +44,17 @@ public class TreeDescriptionParser
                 case "@node-spacing":
                     result.NodeSpacing = new SizeF(float.Parse(values[0]), float.Parse(values[1]));
                     break;
+                case "@image-margins":
+                    result.ImageMargins = new SizeF(float.Parse(values[0]), float.Parse(values[1]));
+                    break;
                 case "@after-each-node":
-                    result.AfterEachNode = values.Select(ParseAnimation).ToArray<DrawingEventNode>();
+                    result.AfterEachNode = values.Select(ParseAnimation).ToArray();
                     break;
                 case "@after-last-child":
-                    result.AfterLastChild = values.Select(ParseAnimation).ToArray<DrawingEventNode>();
+                    result.AfterLastChild = values.Select(ParseAnimation).ToArray();
+                    break;
+                case "@after-each-child-subtree":
+                    result.AfterEachChildSubtree = values.Select(ParseAnimation).ToArray();
                     break;
                 case "@traverse-order":
                     result.TraverseOrder = Enum.Parse<TraverseOrder>(values[0], true);

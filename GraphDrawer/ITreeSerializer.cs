@@ -19,8 +19,13 @@ public class DfsTreeSerializer : ITreeSerializer
         foreach (var animation in tree.AfterEachNode)
             yield return GetAnimation(animation, parent);
         foreach (var child in node.Children)
+        {
             foreach (var animation in GetNodeAnimations(tree, node, child))
                 yield return animation;
+            foreach (var animation in tree.AfterEachChildSubtree)
+                yield return GetAnimation(animation, node);
+
+        }
         if (node.RealChildren.Any())
             foreach (var animation in tree.AfterLastChild)
                 yield return GetAnimation(animation, node);
@@ -32,7 +37,7 @@ public class DfsTreeSerializer : ITreeSerializer
         {
             case NextValueEventNode:
                 if (parent == null)
-                    throw new InvalidOperationException("Can't animate next-value in root");
+                    return new DoNothingEvent();
                 NextValue(parent);
                 return new DrawNodeEvent(parent, GetValue(parent));
             case StartFrameEventNode:

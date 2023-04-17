@@ -44,8 +44,16 @@ public class ImagesGenerator
 
     public void GenerateFile(string filename)
     {
-        var tree = TreeDescriptionParser.ParseFile(filename);
-        GenerateImage(tree, Path.GetFileNameWithoutExtension(filename));
+
+        try
+        {
+            var tree = TreeDescriptionParser.ParseFile(filename);
+            GenerateImage(tree, Path.GetFileNameWithoutExtension(filename));
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Error while generating image for {filename}", e);
+        }
     }
 
     public void GenerateDirectory(string directory)

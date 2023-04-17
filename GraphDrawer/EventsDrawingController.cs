@@ -30,6 +30,8 @@ public class EventsDrawingController
     {
         switch (drawingEvent)
         {
+            case DoNothingEvent:
+                break;
             case DrawNodeEvent(var node, var nodeValue):
                 DrawNode(context, node);
                 DrawNodeValue(context, node, nodeValue);
