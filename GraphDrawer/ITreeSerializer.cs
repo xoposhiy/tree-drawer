@@ -5,75 +5,61 @@ public interface ITreeSerializer
     public IEnumerable<DrawingEvent> GetEvents(TreeDescription tree);
 }
 
-public class DfsTreeSerializer : ITreeSerializer
+public abstract class AbstractTreeSerializer : ITreeSerializer
 {
-    private readonly Dictionary<RealNode, int> valueIndex = new();
+    private readonly Dictionary<RealNode, int> animationIndex = new();
+    protected readonly HashSet<RealNode> AnimatableNodes = new();
+    
     public IEnumerable<DrawingEvent> GetEvents(TreeDescription tree)
     {
-        return GetAnimations(tree, tree.Root);
-
+        return GetAnimations(tree, tree.Root, null);
     }
-    private IEnumerable<DrawingEvent> GetAnimations(TreeDescription tree, RealNode node, RealNode? parent = null)
+
+    protected abstract IEnumerable<DrawingEvent> GetAnimations(TreeDescription tree, RealNode treeRoot, RealNode? parent);
+
+    protected void SwitchToNextNodeSate(RealNode node)
     {
-        yield return new DrawNodeEvent(node, GetValue(node));
-        foreach (var animation in tree.AfterEachNode)
-            yield return GetAnimation(animation, parent);
-        foreach (var child in node.Children)
-        {
-            foreach (var animation in GetNodeAnimations(tree, node, child))
-                yield return animation;
-            foreach (var animation in tree.AfterEachChildSubtree)
-                yield return GetAnimation(animation, node);
-
-        }
-        if (node.RealChildren.Any())
-            foreach (var animation in tree.AfterLastChild)
-                yield return GetAnimation(animation, node);
+        animationIndex[node] = animationIndex.GetValueOrDefault(node, 0) + 1;
     }
 
-    private DrawingEvent GetAnimation(DrawingEventNode drawingEventChild, RealNode? parent)
+    protected NodeState GetState(RealNode node)
+    {
+        var index = animationIndex.GetValueOrDefault(node, 0);
+        if (index >= node.States.Length)
+            return node.States.Last();
+        return node.States[index];
+    }
+
+    protected IEnumerable<DrawingEvent> GetAnimation(DrawingEventNode drawingEventChild, RealNode? parent)
     {
         switch (drawingEventChild)
         {
-            case NextValueEventNode:
-                if (parent == null)
-                    return new DoNothingEvent();
-                NextValue(parent);
-                return new DrawNodeEvent(parent, GetValue(parent));
+            case AnimateParentEventNode:
+                if (parent is null)
+                    yield break;
+                SwitchToNextNodeSate(parent);
+                yield return new DrawNodeEvent(parent, GetState(parent));
+                break;
+            case AnimateAllEventNode:
+                foreach (var node in AnimatableNodes)
+                    SwitchToNextNodeSate(node);
+                foreach (var node in AnimatableNodes)
+                    yield return new DrawNodeEvent(node, GetState(node));
+                break;
+            case AnimateSiblingsEventNode:
+                if (parent is null) yield break;
+                foreach (var sibling in parent.RealChildren)
+                {
+                    if (!AnimatableNodes.Contains(sibling)) continue;
+                    SwitchToNextNodeSate(sibling);
+                    yield return new DrawNodeEvent(sibling, GetState(sibling));
+                }
+                break;
             case StartFrameEventNode:
-                return new StartNextFrameEvent();
+                yield return new StartNextFrameEvent();
+                break;
             default:
                 throw new InvalidOperationException(drawingEventChild.ToString());
         }
     }
-
-    private IEnumerable<DrawingEvent> GetNodeAnimations(TreeDescription tree, RealNode parent, Node node)
-    {
-        switch (node)
-        {
-            case DrawingEventNode animationChild:
-                yield return GetAnimation(animationChild, parent);
-                break;
-            case RealNode realChild:
-                foreach (var animation in GetAnimations(tree, realChild, parent))
-                    yield return animation;
-                break;
-            default:
-                throw new InvalidOperationException(node.ToString());
-        }
-    }
-
-    private void NextValue(RealNode node)
-    {
-        valueIndex[node] = (valueIndex.TryGetValue(node, out var index) ? index : 0) + 1;
-    }
-
-    private string GetValue(RealNode node)
-    {
-        var index = valueIndex.TryGetValue(node, out var i) ? i : 0;
-        if (index >= node.Values.Length)
-            throw new InvalidOperationException(node.ToString());
-        return node.Values[index];
-    }
-
 }

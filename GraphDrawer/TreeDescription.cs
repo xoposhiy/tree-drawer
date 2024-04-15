@@ -9,7 +9,7 @@ public class TreeDescription
     public DrawingEventNode[] AfterEachNode = Array.Empty<DrawingEventNode>();
     public DrawingEventNode[] AfterEachChildSubtree = Array.Empty<DrawingEventNode>();
     public DrawingEventNode[] AfterLastChild = Array.Empty<DrawingEventNode>();
-    public RealNode Root = new("root", "a");
+    public RealNode Root = new(new[]{new NodeState("a", "root")});
 }
 
 public enum TraverseOrder

@@ -32,22 +32,22 @@ public class EventsDrawingController
         {
             case DoNothingEvent:
                 break;
-            case DrawNodeEvent(var node, var nodeValue):
-                DrawNode(context, node);
-                DrawNodeValue(context, node, nodeValue);
+            case DrawNodeEvent(var node, var state):
+                DrawNode(context, node, state);
+                DrawNodeValue(context, node, state);
                 foreach (var child in node.RealChildren)
-                    DrawArrow(context, node, child);
+                    DrawArrow(context, node, child, state);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(drawingEvent) + " " + drawingEvent);
         }
     }
 
-    private void DrawArrow(IDrawer context, RealNode parent, RealNode child)
+    private void DrawArrow(IDrawer context, RealNode parent, RealNode child, NodeState state)
     {
         var start = LowerCenter(positions[parent]);
         var end = UpperCenter(positions[child]);
-        var arrowColor = styleProvider.GetArrowColor(parent.Type, child.Type);
+        var arrowColor = styleProvider.GetArrowColor(state.Type, state.Type);
         var back = (start - end);
         var len = (float)Math.Sqrt(back.X * back.X + back.Y * back.Y);
         back /= len;
@@ -71,16 +71,16 @@ public class EventsDrawingController
         return new PointF(rect.X + rect.Width / 2, rect.Y);
     }
 
-    private void DrawNodeValue(IDrawer context, RealNode node, string value)
+    private void DrawNodeValue(IDrawer context, RealNode node, NodeState state)
     {
         var pos = positions[node];
-        var style = styleProvider.GetStyle(node.Type);
-        context.DrawText(style.TextStyle, pos, value);
+        var style = styleProvider.GetStyle(state.Type);
+        context.DrawText(style.TextStyle, pos, state.Text);
     }
 
-    private void DrawNode(IDrawer context, RealNode node)
+    private void DrawNode(IDrawer context, RealNode node, NodeState state)
     {
-        var style = styleProvider.GetStyle(node.Type);
+        var style = styleProvider.GetStyle(state.Type);
         context.FillRect(style.BackColor, positions[node]);
     }
 }

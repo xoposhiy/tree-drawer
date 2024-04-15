@@ -78,11 +78,22 @@ public class TreeDescriptionParser
                 yield return (ParseAnimation(animation), depth);
             yield break;
         }
-        var parts = nodeLine.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+        yield return (ParseRealNode(nodeLine), depth);
+    }
+
+    private static RealNode ParseRealNode(string nodeLine)
+    {
+        var states = nodeLine.Split('|').SelectMany(ParseNodeStates).ToArray();
+        return new RealNode(states);
+    }
+
+    private static IEnumerable<NodeState> ParseNodeStates(string line)
+    {
+        var parts = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
         var type = parts[0];
         var values = ParseValues(parts.Length > 1 ? parts[1] : "''");
-        var node = new RealNode(values, type);
-        yield return (node, depth);
+        return values.Select(value => new NodeState(value, type));
     }
 
     private static DrawingEventNode ParseAnimation(string animation)
@@ -90,7 +101,9 @@ public class TreeDescriptionParser
         return animation switch
         {
             "frame" => new StartFrameEventNode(),
-            "next-value" => new NextValueEventNode(),
+            "animate-parent" or "next-value" => new AnimateParentEventNode(),
+            "animate-siblings" => new AnimateSiblingsEventNode(),
+            "animate-all" => new AnimateAllEventNode(),
             _ => throw new Exception($"Unknown animation [{animation}]")
         };
     }

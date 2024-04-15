@@ -1,0 +1,29 @@
+﻿@traverse-order BreadthFirst
+a 5
+    a 6
+        a 8
+            a 3
+                a 7
+            a 7
+                a 8
+                a 7
+            n 2
+        a 7
+            pruned ...
+        n 5
+    n 3
+    n 5
+    a 7
+        a 8
+            a 3
+                n 3
+                a 7
+                a 6
+            a 7
+                a 8
+                n 3
+                a 7
+            n 2
+        a 7
+            pruned ...
+        n 5

@@ -17,13 +17,14 @@ public class ImagesGenerator
             File.Delete(file);
         
         
-        var serializer = tree.TraverseOrder switch
+        ITreeSerializer serializer = tree.TraverseOrder switch
         {
             TraverseOrder.DepthFirst => new DfsTreeSerializer(),
-            TraverseOrder.BreadthFirst => throw new NotImplementedException(),
+            TraverseOrder.BreadthFirst => new BfsTreeSerializer(),
             _ => throw new ArgumentOutOfRangeException(tree.TraverseOrder.ToString())
         };
-        var events = serializer.GetEvents(tree);
+        var events = serializer.GetEvents(tree).ToArray();
+        //foreach (var ev in events) Console.WriteLine(ev.ToString());
 
         var drawingSystem = new ImageSharpDrawingSystem();
         var nodePositions = new NodePositionCalculator(tree);

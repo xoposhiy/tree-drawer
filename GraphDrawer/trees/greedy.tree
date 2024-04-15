@@ -1,0 +1,17 @@
+﻿@traverse-order BreadthFirst
+@after-last-child frame animate-siblings frame
+a 5
+    @frame
+    n 6 
+    n 3
+    n 5
+    n 7 | a 7
+        n 8 | a 8
+            n 3
+            n 7 | a 7
+                n 8 | a 8
+                n 3
+                n 7
+            n 2
+        n 7 
+        n 5

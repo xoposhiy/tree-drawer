@@ -1,7 +1,7 @@
 ﻿namespace GraphDrawer
 {
     public record TextStyle(Color FontColor, string FontName, int FontSize);
-    public record NodeStyle(Color BackColor, TextStyle TextStyle);
+    public record NodeStyle(Color BackColor, TextStyle TextStyle, Color OutgoingArrowColor);
 
     public interface IStyler
     {

@@ -37,7 +37,7 @@
             {
                 ArrowConstantColor(var color) => color,
                 ChildColor => GetStyle(childType).BackColor,
-                ParentColor => GetStyle(parentType).BackColor,
+                ParentColor => GetStyle(parentType).OutgoingArrowColor,
                 _ => throw new ArgumentOutOfRangeException()
             };
     }
